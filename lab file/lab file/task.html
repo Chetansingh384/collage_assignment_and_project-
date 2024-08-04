@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>Task Manager</h1>
+            <u><button id="addTaskBtn" class="btn">Add Task</button></u>
+            <a href="view_tasks.php" class="btn">Old Task</a>
+            <div class="user-login">
+                <!-- Display user info here -->
+                <span>Welcome, User</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Task modal for adding new task -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Task</h2>
+            <form id="taskForm">
+                <input type="text" name="taskName" id="taskName" placeholder="Task Name" required>
+                <button  id="addTaskBtn" type="submit" class="btn">Add Task</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Task list section -->
+    <section id="taskList">
+        <h2>Task List</h2>
+        <ul id="tasks">
+            <!-- Tasks will be dynamically added here -->
+        </ul>
+    </section>
+    <script>
+        // Function to delete task from database and remove it from the list
+        async function deleteTask(taskName) {
+            try {
+                const response = await fetch('delete_task.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `taskName=${encodeURIComponent(taskName)}`
+                });
+                if (response.ok) {
+                    const data = await response.text();
+                    console.log(data); // Log response from the server
+                } else {
+                    throw new Error('Failed to delete task');
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    
+        // Function to add task to database and list
+        async function addTask(taskName, taskDate) {
+            try {
+                const response = await fetch('add_task.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `taskName=${encodeURIComponent(taskName)}&taskDate=${encodeURIComponent(taskDate)}`
+                });
+                if (response.ok) {
+                    const data = await response.text();
+                    console.log(data); // Log response from the server
+                    // Add task to the list if addition was successful
+                    addTaskToList(taskName, taskDate);
+                } else {
+                    throw new Error('Failed to add task');
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    
+        // JavaScript to show/hide task modal
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const taskModal = document.getElementById('taskModal');
+        const closeModal = document.querySelector('.close');
+        const taskForm = document.getElementById('taskForm');
+        const taskList = document.getElementById('tasks');
+    
+        addTaskBtn.addEventListener('click', () => {
+            taskModal.style.display = 'block';
+        });
+    
+        closeModal.addEventListener('click', () => {
+            taskModal.style.display = 'none';
+        });
+    
+        // Function to add a new task to the list
+        function addTaskToList(taskName, taskDate) {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <input type="checkbox" cl id="${taskName}" name="${taskName}">
+                <label for="${taskName}">${taskName} - ${taskDate}</label>
+                <button class="delete-btn">Delete</button>
+            `;
+            taskList.appendChild(li);
+            // Add event listener for the delete button
+            const deleteBtn = li.querySelector('.delete-btn');
+            deleteBtn.addEventListener('click', () => {
+                deleteTask(taskName); // Call deleteTask function when delete button is clicked
+                // Remove the task from the UI
+                li.remove();
+            });
+        }
+    
+        // Submit event listener for the task form
+        taskForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const taskName = document.getElementById('taskName').value;
+            const taskDate = new Date().toISOString().slice(0,10); // Get current date
+            addTask(taskName, taskDate);
+            taskModal.style.display = 'none';
+            // You can add code here to submit the form data to your server using AJAX or fetch
+            // For simplicity, I'm just adding the task to the list without server interaction
+        });
+    </script>
+</body>
+</html>

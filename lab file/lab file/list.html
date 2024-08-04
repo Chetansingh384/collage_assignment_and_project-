@@ -1,0 +1,23 @@
+<html>
+
+<head>
+    <title>List Elements</title>
+</head>
+
+<body>
+    <h1>List Elements</h1>
+
+    <ul id="list"></ul>
+
+    <script>
+        var list = document.getElementById("list");
+        var fruits = ["Apple", "Banana", "Orange", "Mango", "Grapes"];
+        for (var i = 0; i < fruits.length; i++) {
+            var listItem = document.createElement("li");
+            listItem.textContent = fruits[i];
+            list.appendChild(listItem);
+        }
+    </script>
+</body>
+
+</html>

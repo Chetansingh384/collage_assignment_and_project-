@@ -1,0 +1,22 @@
+
+<html>
+<head>
+  <title>Image  dynamic changes illusion </title>
+  <script>
+    var i = 0;
+    var arr = ["2.jpg", "3.jpg", "4.jpg", "5.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg"]; 
+
+    function a() {
+      document.Image1.src = arr[i];
+      i++;
+      if (i == arr.length) { 
+        i = 0;
+      }
+      setTimeout(a, 2000); 
+    }
+  </script>
+</head>
+<body onload="a()"> 
+  <img name="Image1" src="2.jpg"> 
+</body>
+</html>

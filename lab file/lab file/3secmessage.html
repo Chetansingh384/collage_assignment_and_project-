@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Alert Every 3 Seconds</title>
+    <script>
+        function showAlert() {
+            alert("Hello");
+            setTimeout(showAlert, 3000); // Re-schedule the alert every 3 seconds
+        }
+
+        function stopAlert() {
+            clearTimeout(timeoutId);
+        }
+
+        // Start the alert loop on page load
+        window.onload = function() {
+            showAlert();
+        };
+    </script>
+</head>
+<body>
+    <h2>Alert Every 3 Seconds</h2>
+    <button onclick="stopAlert()">Stop</button>
+</body>
+</html>
